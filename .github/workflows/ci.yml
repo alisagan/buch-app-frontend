@@ -1,16 +1,17 @@
-name: Lint and Format
+name: Lint and Format Check
 
 on:
   push:
-    branches:
-      - '**'
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  lint-format:
+  lint-and-prettier:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -18,15 +19,11 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install Dependencies
+        run: npm ci
 
       - name: Run ESLint
-        run: |
-          echo "Running ESLint"
-          npm run eslint
+        run: npx eslint . --ext .ts,.tsx,.js,.jsx
 
       - name: Run Prettier Check
-        run: |
-          echo "Running Prettier check"
-          npx run prettier:check
+        run: npx prettier --check .
