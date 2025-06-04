@@ -25,20 +25,20 @@ export default function BuchAnlegenForm() {
       lieferbar: false,
       datum: new Date().toISOString().split("T")[0], // heute als Standardwert
       schlagwörter: [],
-      rating: 0
-    }
+      rating: 0,
+    },
   });
 
   const onSubmit = async (data: BuchAnlegenFormData) => {
     try {
-      await axiosInstance.post('/rest', data); // POST mit Axios, baseURL wird verwendet
-      alert('Buch erfolgreich angelegt!');
+      await axiosInstance.post("/rest", data); // POST mit Axios, baseURL wird verwendet
+      alert("Buch erfolgreich angelegt!");
       methods.reset(); // Formular zurücksetzen
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        alert('Fehler: ' + (err.response?.data?.message || err.message));
+        alert("Fehler: " + (err.response?.data?.message || err.message));
       } else {
-        alert('Unbekannter Fehler');
+        alert("Unbekannter Fehler");
       }
     }
   };
@@ -65,4 +65,3 @@ export default function BuchAnlegenForm() {
     </FormProvider>
   );
 }
-

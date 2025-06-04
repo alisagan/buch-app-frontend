@@ -6,24 +6,22 @@ export default function ISBNFeld() {
     register,
     formState: { errors },
   } = useFormContext();
+
   return (
     <div>
       <label>
         <span>ISBN</span>
         <input
           {...register("isbn", {
-            minLength: {
-              value: 13,
-              message: "13 Ziffern sind nötig",
-            },
-            maxLength: {
-              value: 13,
-              message: "13 Ziffern sind nötig",
+            pattern: {
+              value:
+                /^(97(8|9))?[- ]?(\d{1,5})[- ]?(\d{1,7})[- ]?(\d{1,7})[- ]?(\d{1})$/,
+              message: "ISBN muss dem Muster 978-x-xxxx-xxxx-x entsprechen",
             },
           })}
           aria-invalid={errors["isbn"] ? "true" : "false"}
-          placeholder="ISBN"
-          type="search"
+          placeholder="978-3-897-22583-1"
+          type="text"
         />
       </label>
       {errors["isbn"] && <p role="alert">{errors["isbn"].message}</p>}

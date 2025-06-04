@@ -26,7 +26,7 @@ export default function TitelFeld() {
           type="search"
         />
       </label>
-      s {errors["titel"] && <p role="alert">{errors["titel"].message}</p>}
+      {errors["titel"] && <p role="alert">{errors["titel"].message}</p>}
     </div>
   );
 }
