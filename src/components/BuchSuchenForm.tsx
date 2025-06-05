@@ -13,6 +13,8 @@ import Rating from "./FormularComponents/Rating";
 
 import { sucheBuecher } from "../api/buchApi";
 import type { BuchSuchFormData } from "../types/BuchSuchFormData";
+import Suchergebnisse from "./Suchergebnisse";
+import { useState } from "react";
 // Import der Funktion zum Suchen der Bücher aus dem API-Modul
 
 export default function BuchSuchForm() {
@@ -31,6 +33,9 @@ export default function BuchSuchForm() {
       rating: 0,
     },
   });
+
+  // Suchergebnisse in State Array speichern und nur Content
+  const [ergebnisse, setErgebnisse] = useState<any[]>([]);
 
   const onSubmit = async (data: BuchSuchFormData) => {
     // Funktion, die beim Absenden des Formulars ausgeführt wird
@@ -53,9 +58,12 @@ export default function BuchSuchForm() {
       // Ausgabe der Suchergebnisse in der Konsole
       console.log("Suchergebnisse:", result);
 
+      //Nur die Daten des Ergebnisses rausziehen und in Array speichern
+      setErgebnisse(result.content || []);
+
       // Erzeugt aus den Suchkriterien einen URL-Query-String und gibt ihn aus
-      const queryString = new URLSearchParams(filteredData).toString();
-      console.log("Suche mit Query:", `https://localhost:3000?${queryString}`);
+      //const queryString = new URLSearchParams(filteredData).toString();
+      //console.log("Suche mit Query:", `https://localhost:3000?${queryString}`);
 
       // nutzen von Unknown für Fehler
     } catch (error: unknown) {
@@ -86,6 +94,8 @@ export default function BuchSuchForm() {
         {/* Absende-Button, der deaktiviert wird während das Formular abgeschickt wird */}
         <button disabled={methods.formState.isSubmitting}>Suchen</button>
       </form>
+
+      <Suchergebnisse daten={ergebnisse} />
     </FormProvider>
   );
 }
