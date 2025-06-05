@@ -148,37 +148,3 @@ button:hover:not(:disabled) {
 
 /*MUI Datagrid anpassungen */
 
-
-
-.MuiDataGrid-footerContainer {
-  align-items: center !important;
-  padding: 0.25rem 1rem !important;
-  min-height: 48px;
-  width: 100% !important;
-  margin:  auto;
-  padding: 5px 0;
-  box-sizing: border-box;
-}
-
-.MuiTablePagination-toolbar {
-  min-height: 48px !important;
-  display: flex !important;
-  align-items: center !important;
-  flex-wrap: nowrap !important;
-}
-
-.MuiTablePagination-selectLabel,
-.MuiTablePagination-displayedRows,
-.MuiTablePagination-select {
-  font-size: 0.85rem;
-  margin-top: 0 !important;
-  align-self: center !important;
-  line-height: 1.5 !important;
-}
-
-.MuiTablePagination-actions {
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.2rem;
-  padding-right: 0.25rem;
-}

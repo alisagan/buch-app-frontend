@@ -1,7 +1,18 @@
-import { DataGrid } from "@mui/x-data-grid";
-import type { GridColDef } from "@mui/x-data-grid";
-import { Box, Dialog, DialogTitle, DialogContent, Button } from "@mui/material";
-import { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Button,
+  Box,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  TableContainer,
+  Paper,
+} from "@mui/material";
+import { useEffect, useState } from "react";
 
 interface SuchergebnisseProps {
   daten: any[];
@@ -12,30 +23,20 @@ export default function Suchergebnisse({ daten }: SuchergebnisseProps) {
 
   useEffect(() => {
     if (daten.length > 0) {
-      setOpen(true); // Öffnet den Dialog automatisch wenn Ergebnisse da sind
+      setOpen(true);
     }
   }, [daten]);
-
-  const columns: GridColDef[] = [
-    { field: "isbn", headerName: "ISBN", width: 150 },
-    { field: "titel", headerName: "Titel", width: 200 },
-    { field: "art", headerName: "Art", width: 130 },
-    { field: "preis", headerName: "Preis (€)", width: 120 },
-    {
-      field: "lieferbar",
-      headerName: "Lieferbar",
-      width: 130,
-      valueFormatter: (params: any) => (params.value ? "Ja" : "Nein"),
-    },
-    { field: "datum", headerName: "Datum", width: 130 },
-    { field: "rating", headerName: "★ Rating", width: 130 },
-  ];
 
   const rows = Array.isArray(daten)
     ? daten.map((buch, index) => ({
         id: index + 1,
-        ...buch,
-        titel: buch.titel?.titel || "", // Entpacke Titel-Objekt
+        isbn: buch.isbn || "",
+        titel: buch.titel?.titel || "",
+        art: buch.art || "",
+        preis: buch.preis || "",
+        lieferbar: buch.lieferbar ? "Ja" : "Nein",
+        datum: buch.datum || "",
+        rating: buch.rating || "",
       }))
     : [];
 
@@ -43,19 +44,35 @@ export default function Suchergebnisse({ daten }: SuchergebnisseProps) {
     <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="lg">
       <DialogTitle>Suchergebnisse</DialogTitle>
       <DialogContent>
-        <Box sx={{ height: 450, width: "100%", mt: 2 }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            pagination
-            initialState={{
-              pagination: {
-                paginationModel: { pageSize: 5, page: 0 },
-              },
-            }}
-            pageSizeOptions={[5, 10, 25]}
-            getRowHeight={() => 48}
-          />
+        <Box sx={{ mt: 2 }}>
+          <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
+            <Table stickyHeader size="small">
+              <TableHead sx={{ "& th": { fontWeight: "bold" } }}>
+                <TableRow>
+                  <TableCell>ISBN</TableCell>
+                  <TableCell>Titel</TableCell>
+                  <TableCell>Art</TableCell>
+                  <TableCell>Preis (€)</TableCell>
+                  <TableCell>Lieferbar</TableCell>
+                  <TableCell>Datum</TableCell>
+                  <TableCell>★ Rating</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell>{row.isbn}</TableCell>
+                    <TableCell>{row.titel}</TableCell>
+                    <TableCell>{row.art}</TableCell>
+                    <TableCell>{row.preis}</TableCell>
+                    <TableCell>{row.lieferbar}</TableCell>
+                    <TableCell>{row.datum}</TableCell>
+                    <TableCell>{row.rating}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Box>
         <Box mt={2} textAlign="right">
           <Button variant="outlined" onClick={() => setOpen(false)}>
