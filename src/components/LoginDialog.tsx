@@ -5,6 +5,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import { login } from "../service/authService";
 
 type LoginDialogProps = {
   open: boolean;
@@ -16,13 +17,14 @@ export default function LoginDialog({ open, onClose, onLoginSuccess }: LoginDial
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    //Einfacher Dummy-Check, kann ersetzt werden
-    if (username === "admin" && password === "admin") {
-      onLoginSuccess();
+  const handleLogin = async () => {
+    try {
+      await login(username, password); 
+      onLoginSuccess(); // evtl. setSeite("anlegen") oder so
       onClose();
-    } else {
+    } catch (err) {
       alert("Login fehlgeschlagen");
+      console.error(err);
     }
   };
 
