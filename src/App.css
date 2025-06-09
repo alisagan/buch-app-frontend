@@ -145,3 +145,6 @@ button:hover:not(:disabled) {
 .switch input:checked + .slider::before {
   transform: translateX(22px);
 }
+
+/*MUI Datagrid anpassungen */
+
