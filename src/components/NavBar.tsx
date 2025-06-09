@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -14,17 +15,13 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 
 const pages = [
-  { label: "Anlegen", key: "anlegen" },
-  { label: "Suchen", key: "suchen" },
+  { label: "Anlegen", to: "/anlegen" },
+  { label: "Suchen", to: "/" },
 ] as const;
 
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
-type NavBarProps = {
-  onSeiteWechsel: (seite: "anlegen" | "suchen") => void;
-};
-
-function NavBar({ onSeiteWechsel }: NavBarProps) {
+function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null,
   );
@@ -35,6 +32,7 @@ function NavBar({ onSeiteWechsel }: NavBarProps) {
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -42,6 +40,7 @@ function NavBar({ onSeiteWechsel }: NavBarProps) {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
+
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
@@ -54,8 +53,8 @@ function NavBar({ onSeiteWechsel }: NavBarProps) {
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="#"
+            component={Link}
+            to="/"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -87,13 +86,12 @@ function NavBar({ onSeiteWechsel }: NavBarProps) {
               transformOrigin={{ vertical: "top", horizontal: "left" }}
               sx={{ display: { xs: "block", md: "none" } }}
             >
-              {pages.map(({ label, key }) => (
+              {pages.map(({ label, to }) => (
                 <MenuItem
-                  key={key}
-                  onClick={() => {
-                    handleCloseNavMenu();
-                    onSeiteWechsel(key);
-                  }}
+                  key={to}
+                  onClick={handleCloseNavMenu}
+                  component={Link}
+                  to={to}
                 >
                   <Typography textAlign="center">{label}</Typography>
                 </MenuItem>
@@ -103,13 +101,11 @@ function NavBar({ onSeiteWechsel }: NavBarProps) {
 
           {/* Desktop Menü */}
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map(({ label, key }) => (
+            {pages.map(({ label, to }) => (
               <Button
-                key={key}
-                onClick={() => {
-                  handleCloseNavMenu();
-                  onSeiteWechsel(key);
-                }}
+                key={to}
+                component={Link}
+                to={to}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
                 {label}

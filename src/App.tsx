@@ -1,24 +1,21 @@
+// App.tsx
 import "./App.css";
-import React, { useState } from "react";
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import BuchSuchenForm from "./components/BuchSuchenForm";
-import NavBar from "./components/NavBar";
 import BuchAnlegenForm from "./components/BuchAnlegenForm";
-import type { BuchSuchFormData } from "./types/BuchSuchFormData";
+import NavBar from "./components/NavBar";
 
 export default function App() {
-  const [seite, setSeite] = useState<"suchen" | "anlegen">("suchen");
-
-  const handleFormSubmit = (data: BuchSuchFormData) => {
-    alert(JSON.stringify(data, null, 2));
-  };
-
   return (
-    <>
-      <NavBar onSeiteWechsel={setSeite} />
+    <BrowserRouter>
+      <NavBar /> {/* bleibt immer sichtbar */}
       <div className="App" style={{ padding: "2rem" }}>
-        {seite === "suchen" && <BuchSuchenForm onSubmit={handleFormSubmit} />}
-        {seite === "anlegen" && <BuchAnlegenForm />}
+        <Routes>
+          <Route path="/" element={<BuchSuchenForm />} />
+          <Route path="/anlegen" element={<BuchAnlegenForm />} />
+        </Routes>
       </div>
-    </>
+    </BrowserRouter>
   );
 }
