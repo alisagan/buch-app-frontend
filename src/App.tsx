@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BuchSuchenForm from "./components/BuchSuchenForm";
 import NavBar from "./components/NavBar";
 import BuchAnlegenForm from "./components/BuchAnlegenForm";
@@ -12,6 +12,12 @@ export default function App() {
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   //Variable die sich die angeklickte Seite merkt
   const [pendingAdminSeite, setPendingAdminSeite] = useState<null | typeof seite>(null);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   //Funktion zum Überprüfen ob der Benutzer eingeloggt ist zum Seitenwechsel
   const handleSeiteWechsel = (neueSeite: typeof seite) => {
