@@ -13,18 +13,20 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 
 const settings = [
-  { label: 'Suchen', key: 'suchen' },
-  { label: 'Anlegen', key: 'anlegen' },
-  { label: 'Ändern', key: 'ändern' },
-  { label: 'Löschen', key: 'löschen' },
+  { label: "Suchen", key: "suchen" },
+  { label: "Anlegen", key: "anlegen" },
+  { label: "Ändern", key: "ändern" },
+  { label: "Löschen", key: "löschen" },
 ] as const;
 
 type NavBarProps = {
-  onSeiteWechsel: (seite: 'anlegen' | 'suchen' | 'ändern' | 'löschen') => void;
+  onSeiteWechsel: (seite: "anlegen" | "suchen" | "ändern" | "löschen") => void;
 };
 
 function NavBar({ onSeiteWechsel }: NavBarProps) {
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null,
+  );
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -38,7 +40,7 @@ function NavBar({ onSeiteWechsel }: NavBarProps) {
     <AppBar position="static" color="primary">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
@@ -46,12 +48,12 @@ function NavBar({ onSeiteWechsel }: NavBarProps) {
             // to="/"
             sx={{
               mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
+              display: { xs: "none", md: "flex" },
+              fontFamily: "monospace",
               fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
             }}
           >
             LOGO
@@ -67,12 +69,12 @@ function NavBar({ onSeiteWechsel }: NavBarProps) {
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: '45px' }}
+              sx={{ mt: "45px" }}
               anchorEl={anchorElUser}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
-              anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
               {settings.map(({ label, key }) => (
                 <MenuItem

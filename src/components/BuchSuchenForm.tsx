@@ -14,6 +14,7 @@ import Rating from "./FormularComponents/Rating";
 import { sucheBuecher } from "../api/buchApi";
 import type { BuchSuchFormData } from "../types/BuchSuchFormData";
 import Suchergebnisse from "./Suchergebnisse";
+import type { Buch } from "../types/Buch";
 import { useState } from "react";
 // Import der Funktion zum Suchen der Bücher aus dem API-Modul
 
@@ -35,7 +36,7 @@ export default function BuchSuchForm() {
   });
 
   // Suchergebnisse in State Array speichern und nur Content
-  const [ergebnisse, setErgebnisse] = useState<any[]>([]);
+  const [ergebnisse, setErgebnisse] = useState<Buch[]>([]);
 
   const onSubmit = async (data: BuchSuchFormData) => {
     // Funktion, die beim Absenden des Formulars ausgeführt wird

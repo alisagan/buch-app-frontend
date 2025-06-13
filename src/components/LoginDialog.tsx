@@ -13,13 +13,17 @@ type LoginDialogProps = {
   onLoginSuccess: () => void;
 };
 
-export default function LoginDialog({ open, onClose, onLoginSuccess }: LoginDialogProps) {
+export default function LoginDialog({
+  open,
+  onClose,
+  onLoginSuccess,
+}: LoginDialogProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
     try {
-      await login(username, password); 
+      await login(username, password);
       onLoginSuccess(); // evtl. setSeite("anlegen") oder so
       onClose();
     } catch (err) {

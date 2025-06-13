@@ -7,11 +7,15 @@ import type { BuchSuchFormData } from "./types/BuchSuchFormData";
 import LoginDialog from "./components/LoginDialog";
 
 export default function App() {
-  const [seite, setSeite] = useState<"suchen" | "anlegen" | "ändern" | "löschen">("suchen");
+  const [seite, setSeite] = useState<
+    "suchen" | "anlegen" | "ändern" | "löschen"
+  >("suchen");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   //Variable die sich die angeklickte Seite merkt
-  const [pendingAdminSeite, setPendingAdminSeite] = useState<null | typeof seite>(null);
+  const [pendingAdminSeite, setPendingAdminSeite] = useState<
+    null | typeof seite
+  >(null);
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
