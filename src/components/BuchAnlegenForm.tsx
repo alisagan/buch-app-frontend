@@ -30,8 +30,19 @@ export default function BuchAnlegenForm() {
   });
 
   const onSubmit = async (data: BuchAnlegenFormData) => {
+    // titel-String in Objekt umwandeln
+    const payload = {
+      ...data,
+      titel: {
+        titel: data.titel, // der eingegebene Titel als String
+        // untertitel kannst du hier ggf. hinzufügen, z.B. leer oder optional
+        // untertitel: "",
+      },
+    };
+
     try {
-      await axiosInstance.post("/rest", data); // POST mit Axios, baseURL wird verwendet
+      console.log("POST Body:", payload);
+      await axiosInstance.post("/rest", payload); // POST mit Axios, baseURL wird verwendet
       alert("Buch erfolgreich angelegt!");
       methods.reset(); // Formular zurücksetzen
     } catch (err: unknown) {
