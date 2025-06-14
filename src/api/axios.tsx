@@ -1,12 +1,11 @@
-// src/api/axios.ts
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://localhost:3000", // passe das an dein Backend an
+  baseURL: "/", // wichtig: nicht direkt 3000
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: false, // wenn du Cookies nutzt (z.B. mit Keycloak) //TODO: true setzen und dabei fehler beheben
+  withCredentials: true, // wichtig für Keycloak-Cookies
 });
 
 export default axiosInstance;

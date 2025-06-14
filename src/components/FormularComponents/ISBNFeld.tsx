@@ -14,9 +14,8 @@ export default function ISBNFeld() {
         <input
           {...register("isbn", {
             pattern: {
-              value:
-                /^(97(8|9))?[- ]?(\d{1,5})[- ]?(\d{1,7})[- ]?(\d{1,7})[- ]?(\d{1})$/,
-              message: "ISBN muss dem Muster 978-x-xxxx-xxxx-x entsprechen",
+              value: /^(\d{3})-(\d{1})-(\d{3})-(\d{5})-(\d{1})$/,
+              message: "ISBN muss dem Muster xxx-x-xxx-xxxxx-x entsprechen",
             },
           })}
           aria-invalid={errors["isbn"] ? "true" : "false"}
