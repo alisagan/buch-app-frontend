@@ -3,10 +3,10 @@ export interface Buch {
   isbn: string;
   titel: { titel?: string };
   art: string;
-  preis: number;
+  preis: string;
   lieferbar: boolean;
   datum: string;
-  schlagwörter: string;
+  schlagwoerter: string[];
   rating: number;
   homepage: string;
 }

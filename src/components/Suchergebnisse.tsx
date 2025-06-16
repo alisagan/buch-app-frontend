@@ -12,12 +12,8 @@ import {
   TableBody,
   TableContainer,
   Paper,
-  IconButton,
-  DialogActions,
-  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
 
 // Import der Typdefinitionen für Bücher
 import type { Buch, BuchMitExtras } from "../types/Buch";
@@ -34,12 +30,6 @@ export default function Suchergebnisse({ daten }: SuchergebnisseProps) {
   // Zustand für die angezeigten Zeilen (Buchliste inkl. Zusatzinfos)
   const [rows, setRows] = useState<BuchMitExtras[]>([]);
 
-  // Zustand für das Öffnen des Lösch-Dialogs
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-  // Zustand für das ausgewählte Buch, das gelöscht werden soll
-  const [selectedBuch, setSelectedBuch] = useState<BuchMitExtras | null>(null);
-
   // Sobald neue Daten übergeben werden, Dialog öffnen und Zeilen aufbereiten
   useEffect(() => {
     if (daten.length > 0) {
@@ -52,19 +42,6 @@ export default function Suchergebnisse({ daten }: SuchergebnisseProps) {
       setRows(mapped);
     }
   }, [daten]);
-
-  // Öffnet den Bestätigungsdialog für das Löschen eines Buches
-  const handleDeleteClick = (buch: BuchMitExtras) => {
-    setSelectedBuch(buch);
-    setDeleteDialogOpen(true);
-  };
-
-  // Diese Funktion wird später mit der Löschlogik befüllt
-  const confirmDelete = () => {
-    console.log("Löschen bestätigen für:", selectedBuch);
-    setDeleteDialogOpen(false);
-    setSelectedBuch(null);
-  };
 
   return (
     <>
@@ -91,7 +68,6 @@ export default function Suchergebnisse({ daten }: SuchergebnisseProps) {
                     <TableCell>Schlagwörter</TableCell>
                     <TableCell>★ Rating</TableCell>
                     <TableCell>Homepage</TableCell>
-                    <TableCell align="center">Aktion</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -100,21 +76,20 @@ export default function Suchergebnisse({ daten }: SuchergebnisseProps) {
                       <TableCell>{row.isbn}</TableCell>
                       <TableCell>{row.titel?.titel || ""}</TableCell>
                       <TableCell>{row.art}</TableCell>
-                      <TableCell>{row.preis}</TableCell>
+                      <TableCell>
+                        {parseFloat(row.preis).toFixed(2).replace(".", ",")} €
+                      </TableCell>
                       <TableCell>{row.lieferbar}</TableCell>
                       <TableCell>{row.datum}</TableCell>
-                      <TableCell>{row.schlagwörter}</TableCell>
+
+                      {/* Schlagwörter ausgeben (Backend: schlagwoerter) */}
+                      <TableCell>
+                        {row.schlagwoerter?.join(", ") || ""}
+                      </TableCell>
+
                       <TableCell>{row.rating}</TableCell>
                       <TableCell>{row.homepage}</TableCell>
-                      <TableCell align="center">
-                        {/* Mülleimer-Icon zum Löschen */}
-                        <IconButton
-                          color="error"
-                          onClick={() => handleDeleteClick(row)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
+                      <TableCell align="center"></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -129,28 +104,6 @@ export default function Suchergebnisse({ daten }: SuchergebnisseProps) {
             </Button>
           </Box>
         </DialogContent>
-      </Dialog>
-
-      {/* Bestätigungsdialog zum Löschen eines Buchs */}
-      <Dialog
-        open={deleteDialogOpen}
-        onClose={() => setDeleteDialogOpen(false)}
-      >
-        <DialogTitle>Löschen bestätigen</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Möchtest du das Buch mit ISBN <strong>{selectedBuch?.isbn}</strong>{" "}
-            wirklich löschen?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)} color="inherit">
-            Abbrechen
-          </Button>
-          <Button onClick={confirmDelete} color="error" variant="contained">
-            Löschen
-          </Button>
-        </DialogActions>
       </Dialog>
     </>
   );
