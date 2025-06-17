@@ -6,6 +6,8 @@ export default function RabattFeld() {
     register,
     formState: { errors },
   } = useFormContext();
+
+  const rabattError = errors["rabat"];
   return (
     <div>
       <label>
@@ -27,7 +29,9 @@ export default function RabattFeld() {
           type="number"
         />
       </label>
-      {errors["rabatt"] && <p role="alert">{errors["rabatt"]?.message}</p>}
+      {typeof rabattError?.message === "string" && (
+        <p role="alert">{rabattError.message}</p>
+      )}
     </div>
   );
 }
