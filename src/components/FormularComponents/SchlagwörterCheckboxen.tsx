@@ -13,6 +13,9 @@ export default function SchlagwörterCheckboxen() {
     register,
     formState: { errors },
   } = useFormContext();
+
+  const schlagwoerterError = errors["schlagwörter"];
+
   return (
     <div>
       <p>Schlagwörter</p>
@@ -27,8 +30,8 @@ export default function SchlagwörterCheckboxen() {
           />
         </label>
       ))}
-      {errors["schlagwörter"] && (
-        <p role="alert">{errors["schlagwörter"].message}</p>
+      {typeof schlagwoerterError?.message === "string" && (
+        <p role="alert">{schlagwoerterError.message}</p>
       )}
     </div>
   );

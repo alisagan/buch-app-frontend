@@ -6,6 +6,10 @@ export default function TitelFeld() {
     register,
     formState: { errors },
   } = useFormContext();
+
+  // Fehler extrahieren und vorab typisieren
+  const titelError = errors["titel"];
+
   return (
     <div>
       <label>
@@ -21,12 +25,16 @@ export default function TitelFeld() {
               message: "Titel zu lang",
             },
           })}
-          aria-invalid={errors["titel"] ? "true" : "false"}
+          aria-invalid={titelError ? "true" : "false"}
           placeholder="Titel"
           type="search"
         />
       </label>
-      {errors["titel"] && <p role="alert">{errors["titel"].message}</p>}
+
+      {/* Fehlermeldung nur anzeigen, wenn sie ein String ist */}
+      {typeof titelError?.message === "string" && (
+        <p role="alert">{titelError.message}</p>
+      )}
     </div>
   );
 }

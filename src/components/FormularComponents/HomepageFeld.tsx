@@ -6,6 +6,9 @@ export default function HomepageFeld() {
     register,
     formState: { errors },
   } = useFormContext();
+
+  const homepageError = errors["homepage"];
+
   return (
     <div>
       <label>
@@ -26,7 +29,9 @@ export default function HomepageFeld() {
           type="search"
         />
       </label>
-      {errors["omepage"] && <p role="alert">{errors["homepage"].message}</p>}
+      {typeof homepageError?.message === "string" && (
+        <p role="alert">{homepageError.message}</p>
+      )}
     </div>
   );
 }

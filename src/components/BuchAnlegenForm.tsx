@@ -57,7 +57,7 @@ export default function BuchAnlegenForm() {
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <h1>Buch anlegen</h1>
+        <h1>Buch Anlegen</h1>
 
         {/*  Wiederverwendbare Formularfelder */}
         <ISBNFeld />
