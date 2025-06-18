@@ -20,22 +20,25 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import HkaLogo from "../assets/hka-logo.jpg";
 
-// Zwei Seiten die es gibt
+// Definiert die öffentlichen Seiten der Navigation
 const pages: { label: string; key: SeiteKey }[] = [
   { label: "Suchen", key: "suchen" },
 ];
+
+// Definiert die geschützten Seiten, die nur im eingeloggten Zustand angezeigt werden
 const privatePages: { label: string; key: SeiteKey }[] = [
   { label: "Anlegen", key: "anlegen" },
 ];
 
-//Zentrale Seiten Elemente
+// Zulässige Seitenschlüssel (für Navigation und Seitenauswahl)
 type SeiteKey = "suchen" | "anlegen";
 
+// Übergabeparameter für die NavBar-Komponente
 type NavBarProps = {
-  isLoggedIn: boolean;
-  onLogin: (email: string, password: string) => void;
-  onLogout: () => void;
-  onSeiteWechsel: (seite: SeiteKey) => void;
+  isLoggedIn: boolean; // Gibt an, ob der Benutzer eingeloggt ist
+  onLogin: (email: string, password: string) => void; // Login-Funktion
+  onLogout: () => void; // Logout-Funktion
+  onSeiteWechsel: (seite: SeiteKey) => void; // Seitenwechsel-Funktion
 };
 
 export default function NavBar({
@@ -44,24 +47,27 @@ export default function NavBar({
   onLogout,
   onSeiteWechsel,
 }: NavBarProps) {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
+  // Zustand für geöffnete Navigationsmenüs (mobil/klein)
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  // Zustand für Benutzer-Menü (z.B. Logout)
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  // Zustand für Sichtbarkeit des Login-Dialogs
   const [loginOpen, setLoginOpen] = React.useState(false);
+  // Eingabefelder für E-Mail und Passwort im Login-Dialog
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
+  // Öffnet das Navigationsmenü (z.B. bei Burger-Icon)
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
 
+  // Schließt das Navigationsmenü
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
+  // Klick auf Benutzer-Icon: Login-Dialog oder User-Menü öffnen
   const handleAccountIconClick = (event: React.MouseEvent<HTMLElement>) => {
     if (isLoggedIn) {
       setAnchorElUser(event.currentTarget);
@@ -70,10 +76,12 @@ export default function NavBar({
     }
   };
 
+  // Schließt das Benutzer-Menü
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
 
+  // Führt Logout durch nach Bestätigung
   const handleLogoutClick = () => {
     handleCloseUserMenu();
     const confirmed = window.confirm("Möchtest du dich wirklich ausloggen?");
@@ -82,6 +90,7 @@ export default function NavBar({
     }
   };
 
+  // Login-Handler: ruft Login-Funktion aus Props auf und schließt Dialog
   const handleLogin = () => {
     onLogin(email, password);
     setLoginOpen(false);
@@ -91,10 +100,11 @@ export default function NavBar({
 
   return (
     <>
+      {/* Hauptnavigation */}
       <AppBar position="static" color="primary">
         <Container maxWidth="xl">
           <Toolbar disableGutters sx={{ alignItems: "center" }}>
-            {/* Uni-Logo */}
+            {/* Uni-Logo links */}
             <img
               src={HkaLogo}
               alt="HKA Logo"
@@ -102,7 +112,7 @@ export default function NavBar({
             />
             <Typography variant="h6" noWrap sx={{ mr: 2 }} />
 
-            {/* Zentrales BUCH */}
+            {/* Titel der Anwendung */}
             <Typography
               variant="h4"
               noWrap
@@ -115,7 +125,7 @@ export default function NavBar({
               BUCH
             </Typography>
 
-            {/* Burger-Menü */}
+            {/* Burger-Menü (Seitenwechsel) */}
             <Box sx={{ display: "flex" }}>
               <IconButton
                 aria-label="Menü öffnen"
@@ -136,8 +146,8 @@ export default function NavBar({
                     <MenuItem
                       key={key}
                       onClick={() => {
-                        onSeiteWechsel(key);
-                        handleCloseNavMenu();
+                        onSeiteWechsel(key); // Seitenwechsel auslösen
+                        handleCloseNavMenu(); // Menü schließen
                       }}
                     >
                       <Typography textAlign="center">{label}</Typography>
@@ -147,7 +157,7 @@ export default function NavBar({
               </Menu>
             </Box>
 
-            {/* Einheitliches AccountCircle Icon */}
+            {/* Benutzer-Icon mit Login/Logout */}
             <Box sx={{ ml: 2 }}>
               <Tooltip title={isLoggedIn ? "Benutzeroptionen" : "Login"}>
                 <IconButton
