@@ -4,6 +4,7 @@ import BuchSuchenForm from "./components/BuchSuchenForm";
 import NavBar from "./components/NavBar";
 import BuchAnlegenForm from "./components/BuchAnlegenForm";
 import { login } from "./service/authService";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 export default function App() {
   // State für die aktuell gewählte Seite ("suchen" oder "anlegen")
@@ -44,7 +45,7 @@ export default function App() {
   };
 
   return (
-    <>
+    <Router>
       {/* Navigationsleiste mit Login/Logout- und Seitenwechsel-Callbacks */}
       <NavBar
         isLoggedIn={isLoggedIn}
@@ -54,10 +55,15 @@ export default function App() {
       />
 
       {/* Hauptinhalt je nach Seite und Login-Status */}
-      <div className="App" style={{ padding: "2rem" }}>
-        {seite === "suchen" && <BuchSuchenForm />}                  {/* Suchformular anzeigen */}
-        {seite === "anlegen" && isLoggedIn && <BuchAnlegenForm />}  {/* Nur bei Login anzeigen */}
-      </div>
-    </>
+      <Routes>
+        <Route path="/suche" element={
+          <div className="App" style={{ padding: "2rem" }}>
+            {seite === "suchen" && <BuchSuchenForm />}
+            {seite === "anlegen" && isLoggedIn && <BuchAnlegenForm />}
+          </div>
+        } />
+        <Route path="/" element={<Navigate to="/suche" replace />} />
+      </Routes>
+    </Router>
   );
 }
