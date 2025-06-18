@@ -7,13 +7,15 @@ export default function ISBNFeld() {
     formState: { errors },
   } = useFormContext();
 
+  const isbnError = errors["isbn"];
+
   return (
     <div>
       <label>
         <span>ISBN</span>
         <input
           {...register(
-            "isbn",
+            "isbn"
             // , {
             //   pattern: {
             //     value: /^(\d{3})-(\d{1})-(\d{3})-(\d{5})-(\d{1})$/,
@@ -26,7 +28,9 @@ export default function ISBNFeld() {
           type="text"
         />
       </label>
-      {errors["isbn"] && <p role="alert">{errors["isbn"].message}</p>}
+      {typeof isbnError?.message === "string" && (
+        <p role="alert">{isbnError.message}</p>
+      )}
     </div>
   );
 }

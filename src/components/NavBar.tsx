@@ -1,160 +1,215 @@
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import Container from "@mui/material/Container";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  IconButton,
+  Typography,
+  Menu,
+  MenuItem,
+  TextField,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Tooltip,
+  Container,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import HkaLogo from "../assets/hka-logo.jpg";
 
-const pages = [
+// Definiert die öffentlichen Seiten der Navigation
+const pages: { label: string; key: SeiteKey }[] = [
   { label: "Suchen", key: "suchen" },
-  { label: "Anlegen", key: "anlegen" },
-  { label: "Ändern", key: "ändern" },
-  { label: "Löschen", key: "löschen" },
-] as const;
+];
 
+// Definiert die geschützten Seiten, die nur im eingeloggten Zustand angezeigt werden
+const privatePages: { label: string; key: SeiteKey }[] = [
+  { label: "Anlegen", key: "anlegen" },
+];
+
+// Zulässige Seitenschlüssel (für Navigation und Seitenauswahl)
+type SeiteKey = "suchen" | "anlegen";
+
+// Übergabeparameter für die NavBar-Komponente
 type NavBarProps = {
-  isLoggedIn: boolean;
-  onSeiteWechsel: (seite: (typeof pages)[number]["key"]) => void;
-  onLogout: () => void;
+  isLoggedIn: boolean; // Gibt an, ob der Benutzer eingeloggt ist
+  onLogin: (email: string, password: string) => void; // Login-Funktion
+  onLogout: () => void; // Logout-Funktion
+  onSeiteWechsel: (seite: SeiteKey) => void; // Seitenwechsel-Funktion
 };
 
 export default function NavBar({
   isLoggedIn,
-  onSeiteWechsel,
+  onLogin,
   onLogout,
+  onSeiteWechsel,
 }: NavBarProps) {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null,
-  );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null,
-  );
+  // Zustand für geöffnete Navigationsmenüs (mobil/klein)
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  // Zustand für Benutzer-Menü (z.B. Logout)
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  // Zustand für Sichtbarkeit des Login-Dialogs
+  const [loginOpen, setLoginOpen] = React.useState(false);
+  // Eingabefelder für E-Mail und Passwort im Login-Dialog
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
+  // Öffnet das Navigationsmenü (z.B. bei Burger-Icon)
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
+
+  // Schließt das Navigationsmenü
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
+  // Klick auf Benutzer-Icon: Login-Dialog oder User-Menü öffnen
+  const handleAccountIconClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (isLoggedIn) {
+      setAnchorElUser(event.currentTarget);
+    } else {
+      setLoginOpen(true);
+    }
   };
+
+  // Schließt das Benutzer-Menü
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
 
+  // Führt Logout durch nach Bestätigung
+  const handleLogoutClick = () => {
+    handleCloseUserMenu();
+    const confirmed = window.confirm("Möchtest du dich wirklich ausloggen?");
+    if (confirmed) {
+      onLogout();
+    }
+  };
+
+  // Login-Handler: ruft Login-Funktion aus Props auf und schließt Dialog
+  const handleLogin = () => {
+    onLogin(email, password);
+    setLoginOpen(false);
+    setEmail("");
+    setPassword("");
+  };
+
   return (
-    <AppBar position="static" color="primary">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          {/* Logo for desktop */}
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              color: "inherit",
-            }}
-          >
-            LOGO
-          </Typography>
+    <>
+      {/* Hauptnavigation */}
+      <AppBar position="static" color="primary">
+        <Container maxWidth="xl">
+          <Toolbar disableGutters sx={{ alignItems: "center" }}>
+            {/* Uni-Logo links */}
+            <img
+              src={HkaLogo}
+              alt="HKA Logo"
+              style={{ marginRight: 8, height: 55, objectFit: "contain" }}
+            />
+            <Typography variant="h6" noWrap sx={{ mr: 2 }} />
 
-          {/* Mobile menu icon */}
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="open navigation menu"
-              onClick={handleOpenNavMenu}
-              color="inherit"
+            {/* Titel der Anwendung */}
+            <Typography
+              variant="h4"
+              noWrap
+              sx={{
+                flexGrow: 1,
+                textAlign: "center",
+                fontWeight: "bold",
+              }}
             >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              anchorEl={anchorElNav}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-              transformOrigin={{ vertical: "top", horizontal: "left" }}
-              sx={{ display: { xs: "block", md: "none" } }}
-            >
-              {pages.map(({ label, key }) => (
-                <MenuItem
-                  key={key}
-                  onClick={() => {
-                    handleCloseNavMenu();
-                    onSeiteWechsel(key);
-                  }}
-                >
-                  <Typography textAlign="center">{label}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+              BUCH
+            </Typography>
 
-          {/* Logo for mobile hidden desktop */}
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            sx={{
-              flexGrow: 1,
-              display: { xs: "flex", md: "none" },
-              color: "inherit",
-            }}
-          >
-            LOGO
-          </Typography>
-
-          {/* Desktop menu buttons */}
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map(({ label, key }) => (
-              <MenuItem
-                key={key}
-                onClick={() => onSeiteWechsel(key)}
-                sx={{ color: "white", display: "block" }}
+            {/* Burger-Menü (Seitenwechsel) */}
+            <Box sx={{ display: "flex" }}>
+              <IconButton
+                aria-label="Menü öffnen"
+                onClick={handleOpenNavMenu}
+                color="inherit"
               >
-                {label}
-              </MenuItem>
-            ))}
-          </Box>
-
-          {/* User actions */}
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="User actions">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <MenuIcon />
               </IconButton>
-            </Tooltip>
-            <Menu
-              anchorEl={anchorElUser}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
-              transformOrigin={{ vertical: "top", horizontal: "right" }}
-            >
-              {isLoggedIn && (
-                <MenuItem
-                  onClick={() => {
-                    handleCloseUserMenu();
-                    onLogout();
-                  }}
+              <Menu
+                anchorEl={anchorElNav}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                transformOrigin={{ vertical: "top", horizontal: "right" }}
+              >
+                {[...pages, ...(isLoggedIn ? privatePages : [])].map(
+                  ({ label, key }) => (
+                    <MenuItem
+                      key={key}
+                      onClick={() => {
+                        onSeiteWechsel(key); // Seitenwechsel auslösen
+                        handleCloseNavMenu(); // Menü schließen
+                      }}
+                    >
+                      <Typography textAlign="center">{label}</Typography>
+                    </MenuItem>
+                  )
+                )}
+              </Menu>
+            </Box>
+
+            {/* Benutzer-Icon mit Login/Logout */}
+            <Box sx={{ ml: 2 }}>
+              <Tooltip title={isLoggedIn ? "Benutzeroptionen" : "Login"}>
+                <IconButton
+                  size="large"
+                  onClick={handleAccountIconClick}
+                  color="inherit"
                 >
-                  <Typography textAlign="center">Logout</Typography>
-                </MenuItem>
-              )}
-            </Menu>
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
+                  <AccountCircle />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                anchorEl={anchorElUser}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                transformOrigin={{ vertical: "top", horizontal: "right" }}
+              >
+                <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
+              </Menu>
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+
+      {/* Login-Dialog */}
+      <Dialog open={loginOpen} onClose={() => setLoginOpen(false)}>
+        <DialogTitle>Login</DialogTitle>
+        <DialogContent>
+          <TextField
+            margin="dense"
+            label="E-Mail"
+            type="email"
+            fullWidth
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            label="Passwort"
+            type="password"
+            fullWidth
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setLoginOpen(false)}>Abbrechen</Button>
+          <Button onClick={handleLogin} variant="contained">
+            Login
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }

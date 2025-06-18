@@ -1,79 +1,63 @@
 import "./App.css";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import BuchSuchenForm from "./components/BuchSuchenForm";
 import NavBar from "./components/NavBar";
 import BuchAnlegenForm from "./components/BuchAnlegenForm";
-import type { BuchSuchFormData } from "./types/BuchSuchFormData";
-import LoginDialog from "./components/LoginDialog";
+import { login } from "./service/authService";
 
 export default function App() {
-  const [seite, setSeite] = useState<
-    "suchen" | "anlegen" | "ändern" | "löschen"
-  >("suchen");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showLoginDialog, setShowLoginDialog] = useState(false);
-  const [pendingAdminSeite, setPendingAdminSeite] = useState<
-    null | typeof seite
-  >(null);
+  // State für die aktuell gewählte Seite ("suchen" oder "anlegen")
+  const [seite, setSeite] = useState<"suchen" | "anlegen">("suchen");
 
+  // State zur Verwaltung des Login-Zustands
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Beim Laden der App prüfen, ob ein Token im localStorage vorhanden ist
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      setIsLoggedIn(true);
+      setIsLoggedIn(true); // Benutzer als eingeloggt markieren
     }
   }, []);
 
-  // Handler für Seitenwechsel mit Admin-Prüfung
-  const handleSeiteWechsel = (neueSeite: typeof seite) => {
-    const istAdminAktion = ["anlegen", "ändern", "löschen"].includes(neueSeite);
+  // Funktion zum Wechseln der aktiven Seite (z.B. von "suchen" zu "anlegen")
+  const handleSeiteWechsel = (neueSeite: "suchen" | "anlegen") => {
+    setSeite(neueSeite);
+  };
 
-    if (istAdminAktion && !isLoggedIn) {
-      setPendingAdminSeite(neueSeite);
-      setShowLoginDialog(true);
-    } else {
-      setSeite(neueSeite);
+  // Login-Funktion, ruft den AuthService auf und speichert den Token
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      await login(email, password); // Holt Token und speichert ihn im localStorage
+      setIsLoggedIn(true);          // Login-Zustand setzen
+    } catch (err) {
+      alert("Login fehlgeschlagen");
+      console.error(err);
     }
   };
 
-  // Logout-Funktion entfernt Token und setzt zurück
+  // Logout-Funktion: Token löschen, Status zurücksetzen, Seite auf "suchen" setzen
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
     setSeite("suchen");
   };
 
-  // Handler für Suche (unverändert)
-  const handleFormSubmit = (data: BuchSuchFormData) => {
-    alert(JSON.stringify(data, null, 2));
-  };
-
   return (
     <>
-      {/* NavBar erhält jetzt isLoggedIn und onLogout */}
+      {/* Navigationsleiste mit Login/Logout- und Seitenwechsel-Callbacks */}
       <NavBar
-        onSeiteWechsel={handleSeiteWechsel}
-        onLogout={handleLogout}
         isLoggedIn={isLoggedIn}
+        onSeiteWechsel={handleSeiteWechsel}
+        onLogin={handleLogin}
+        onLogout={handleLogout}
       />
 
+      {/* Hauptinhalt je nach Seite und Login-Status */}
       <div className="App" style={{ padding: "2rem" }}>
-        {seite === "suchen" && <BuchSuchenForm onSubmit={handleFormSubmit} />}
-        {seite === "anlegen" && isLoggedIn && <BuchAnlegenForm />}
+        {seite === "suchen" && <BuchSuchenForm />}                  {/* Suchformular anzeigen */}
+        {seite === "anlegen" && isLoggedIn && <BuchAnlegenForm />}  {/* Nur bei Login anzeigen */}
       </div>
-
-      {/* LoginDialog wird angezeigt, wenn Admin-Seite angefordert wird */}
-      <LoginDialog
-        open={showLoginDialog}
-        onClose={() => setShowLoginDialog(false)}
-        onLoginSuccess={() => {
-          setIsLoggedIn(true);
-          setShowLoginDialog(false);
-          if (pendingAdminSeite) {
-            setSeite(pendingAdminSeite);
-            setPendingAdminSeite(null);
-          }
-        }}
-      />
     </>
   );
 }

@@ -80,7 +80,7 @@ export default function BuchSuchForm() {
     // FormProvider stellt den Formularzustand allen untergeordneten Komponenten zur Verfügung
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <h1>Suche</h1>
+        <h1>Buch Suche</h1>
 
         {/* Einzelne Eingabekomponenten des Suchformulars */}
         <ISBNFeld />
