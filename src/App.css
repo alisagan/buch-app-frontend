@@ -24,11 +24,6 @@ h1 {
   color: #222;
 }
 
-/* Eingabegruppen */
-div {
-  margin-bottom: 1.5rem;
-}
-
 label {
   display: flex;
   flex-direction: column;

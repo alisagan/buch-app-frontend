@@ -15,10 +15,12 @@ import {
   DialogActions,
   Tooltip,
   Container,
+  Alert,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import HkaLogo from "../assets/hka-logo.jpg";
+import { useNavigate } from "react-router-dom";
 
 // Definiert die öffentlichen Seiten der Navigation
 const pages: { label: string; key: SeiteKey }[] = [
@@ -36,17 +38,12 @@ type SeiteKey = "suchen" | "anlegen";
 // Übergabeparameter für die NavBar-Komponente
 type NavBarProps = {
   isLoggedIn: boolean; // Gibt an, ob der Benutzer eingeloggt ist
-  onLogin: (email: string, password: string) => void; // Login-Funktion
+  onLogin: (email: string, password: string) => Promise<void>; // Login-Funktion
   onLogout: () => void; // Logout-Funktion
-  onSeiteWechsel: (seite: SeiteKey) => void; // Seitenwechsel-Funktion
 };
 
-export default function NavBar({
-  isLoggedIn,
-  onLogin,
-  onLogout,
-  onSeiteWechsel,
-}: NavBarProps) {
+export default function NavBar({ isLoggedIn, onLogin, onLogout }: NavBarProps) {
+  const navigate = useNavigate();
   // Zustand für geöffnete Navigationsmenüs (mobil/klein)
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null,
@@ -60,6 +57,13 @@ export default function NavBar({
   // Eingabefelder für E-Mail und Passwort im Login-Dialog
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [loginFailed, setLoginFailed] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!loginOpen) {
+      setLoginFailed(false); // Fehlerstatus zurücksetzen, wenn Dialog geschlossen wird
+    }
+  }, [loginOpen]);
 
   // Öffnet das Navigationsmenü (z.B. bei Burger-Icon)
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -95,11 +99,15 @@ export default function NavBar({
   };
 
   // Login-Handler: ruft Login-Funktion aus Props auf und schließt Dialog
-  const handleLogin = () => {
-    onLogin(email, password);
-    setLoginOpen(false);
-    setEmail("");
-    setPassword("");
+  const handleLogin = async () => {
+    try {
+      await onLogin(email, password);
+      setLoginOpen(false);
+      setEmail("");
+      setPassword("");
+    } catch {
+      setLoginFailed(true);
+    }
   };
 
   return (
@@ -150,7 +158,7 @@ export default function NavBar({
                     <MenuItem
                       key={key}
                       onClick={() => {
-                        onSeiteWechsel(key); // Seitenwechsel auslösen
+                        navigate("/" + key); // Seitenwechsel auslösen
                         handleCloseNavMenu(); // Menü schließen
                       }}
                     >
@@ -187,32 +195,55 @@ export default function NavBar({
       </AppBar>
 
       {/* Login-Dialog */}
-      <Dialog open={loginOpen} onClose={() => setLoginOpen(false)}>
+      <Dialog
+        open={loginOpen}
+        onClose={() => {
+          setLoginOpen(false);
+        }}
+      >
         <DialogTitle>Login</DialogTitle>
-        <DialogContent>
-          <TextField
-            margin="dense"
-            label="E-Mail"
-            type="email"
-            fullWidth
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            margin="dense"
-            label="Passwort"
-            type="password"
-            fullWidth
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setLoginOpen(false)}>Abbrechen</Button>
-          <Button onClick={handleLogin} variant="contained">
-            Login
-          </Button>
-        </DialogActions>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault(); // Verhindert das Standard-Formularverhalten
+            handleLogin(); // Ruft die Login-Funktion auf
+          }}
+        >
+          <DialogContent>
+            <TextField
+              margin="dense"
+              label="E-Mail"
+              type="email"
+              fullWidth
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <TextField
+              margin="dense"
+              label="Passwort"
+              type="password"
+              fullWidth
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            {loginFailed ? (
+              <Alert variant="filled" severity="error">
+                Login fehlgeschlagen. Bitte überprüfe deine Eingaben.
+              </Alert>
+            ) : null}
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                setLoginOpen(false);
+              }}
+            >
+              Abbrechen
+            </Button>
+            <Button type="submit" onClick={handleLogin} variant="contained">
+              Login
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </>
   );
