@@ -15,7 +15,7 @@ export default function ISBNFeld() {
         <span>ISBN</span>
         <input
           {...register(
-            "isbn"
+            "isbn",
             // , {
             //   pattern: {
             //     value: /^(\d{3})-(\d{1})-(\d{3})-(\d{5})-(\d{1})$/,

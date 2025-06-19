@@ -30,7 +30,7 @@ export default function App() {
   const handleLogin = async (email: string, password: string) => {
     try {
       await login(email, password); // Holt Token und speichert ihn im localStorage
-      setIsLoggedIn(true);          // Login-Zustand setzen
+      setIsLoggedIn(true); // Login-Zustand setzen
     } catch (err) {
       alert("Login fehlgeschlagen");
       console.error(err);
@@ -58,8 +58,8 @@ export default function App() {
       <Routes>
         <Route path="/suche" element={
           <div className="App" style={{ padding: "2rem" }}>
-            {seite === "suchen" && <BuchSuchenForm />}
-            {seite === "anlegen" && isLoggedIn && <BuchAnlegenForm />}
+            {seite === "suchen" && <BuchSuchenForm />} {/* Suchformular anzeigen */}
+            {seite === "anlegen" && isLoggedIn && <BuchAnlegenForm />} {/* Nur bei Login anzeigen */}
           </div>
         } />
         <Route path="/" element={<Navigate to="/suche" replace />} />

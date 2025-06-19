@@ -1,0 +1,22 @@
+@startuml anonymer_Zustand
+title Zustand: Anonymer Benutzer (nicht eingeloggt)
+
+[*] --> Suchseite
+
+state Suchseite {
+  [*] --> Suchformular
+  Suchformular --> Warten : "Suchen"-Button
+  Warten --> Ergebnisprüfung : Ergebnisse eingetroffen
+  Ergebnisprüfung --> Fehler : Fehlerhafte Eingabe
+  Ergebnisprüfung --> Ergebnisse : Mindestens ein Buch gefunden
+}
+
+[*] --> ProfilIcon : Klick auf Profil
+
+ProfilIcon --> Loginformular : "Login"
+Loginformular --> LoginWarten : Klick auf "Login"
+LoginWarten --> LoginErgebnis : Login ausgewertet
+LoginErgebnis --> Loginformular : Fehlerhafte Eingabe
+LoginErgebnis --> [*] : Erfolgreich (Wechsel zu Admin-Zustand)
+
+@enduml
