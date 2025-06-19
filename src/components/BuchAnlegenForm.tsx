@@ -12,8 +12,14 @@ import RabattFeld from "./FormularComponents/RabattFeld";
 import type { BuchAnlegenFormData } from "../types/BuchAnlegenFormData";
 import axiosInstance from "../api/axios";
 import axios from "axios";
+import { Alert, Snackbar } from "@mui/material";
+import { useState } from "react";
 
 export default function BuchAnlegenForm() {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successNotificationOpen, setSuccessNotificationOpen] =
+    useState<boolean>(false);
+
   const methods = useForm<BuchAnlegenFormData>({
     defaultValues: {
       isbn: "",
@@ -43,17 +49,22 @@ export default function BuchAnlegenForm() {
     try {
       console.log("POST Body:", payload);
       await axiosInstance.post("/rest", payload); // POST mit Axios, baseURL wird verwendet
-      alert("Buch erfolgreich angelegt!");
+      setSuccessNotificationOpen(true);
+      setErrorMessage(null); // Fehlernachricht zurücksetzen
       methods.reset(); // Formular zurücksetzen
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        alert("Fehler: " + (err.response?.data?.message || err.message));
+        setErrorMessage(
+          "Fehler: " + (err.response?.data?.message || err.message),
+        );
       } else {
-        alert("Unbekannter Fehler");
+        setErrorMessage("Unbekannter Fehler");
       }
     }
   };
-
+  const handleClose = () => {
+    setSuccessNotificationOpen(false);
+  };
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
@@ -72,6 +83,18 @@ export default function BuchAnlegenForm() {
         <Rating />
 
         <button disabled={methods.formState.isSubmitting}>Anlegen</button>
+
+        {errorMessage && (
+          <Alert style={{ marginTop: "5px" }} variant="filled" severity="error">
+            {errorMessage}
+          </Alert>
+        )}
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          open={successNotificationOpen}
+          onClose={handleClose}
+          message="Buch erfolgreich angelegt!"
+        />
       </form>
     </FormProvider>
   );
