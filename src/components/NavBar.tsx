@@ -48,9 +48,13 @@ export default function NavBar({
   onSeiteWechsel,
 }: NavBarProps) {
   // Zustand für geöffnete Navigationsmenüs (mobil/klein)
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
+    null,
+  );
   // Zustand für Benutzer-Menü (z.B. Logout)
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null,
+  );
   // Zustand für Sichtbarkeit des Login-Dialogs
   const [loginOpen, setLoginOpen] = React.useState(false);
   // Eingabefelder für E-Mail und Passwort im Login-Dialog
@@ -152,7 +156,7 @@ export default function NavBar({
                     >
                       <Typography textAlign="center">{label}</Typography>
                     </MenuItem>
-                  )
+                  ),
                 )}
               </Menu>
             </Box>

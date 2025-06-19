@@ -1,0 +1,27 @@
+@startuml admin_zustand
+title Zustand: Eingeloggt als Admin
+
+[*] --> AdminStart
+
+' Startpunkt zeigt sowohl auf Suche als auch auf Anlegen-Menüoption
+AdminStart --> Suchseite
+AdminStart --> AnlegenSeite : Burgermenü → "Anlegen"
+
+' SUCHE wie beim User
+state Suchseite {
+  [*] --> Suchformular
+  Suchformular --> Warten : "Suchen"-Button
+  Warten --> Ergebnisprüfung : Ergebnisse eingetroffen
+  Ergebnisprüfung --> Fehler : Fehlerhafte Eingabe
+  Ergebnisprüfung --> Ergebnisse : Mindestens ein Buch gefunden
+}
+
+' ANLEGEN als separater Bereich
+state AnlegenSeite {
+  [*] --> FormularAnlegen
+  FormularAnlegen --> Validierung : "Anlegen"-Button
+  Validierung --> FehlerAnlegen : Ungültige Daten
+  Validierung --> ErfolgreichAngelegt : Erfolgreich
+}
+
+@enduml
