@@ -211,8 +211,8 @@ export default function NavBar({ isLoggedIn, onLogin, onLogout }: NavBarProps) {
           <DialogContent>
             <TextField
               margin="dense"
-              label="E-Mail"
-              type="email"
+              label="Username"
+              type="text"
               fullWidth
               value={email}
               onChange={(e) => setEmail(e.target.value)}
